@@ -20,7 +20,9 @@ for target_name in os.listdir(DATA_PATH):
 
     cited_opinions = []
     for citation in target.identifier.citations:
-        cited_opinions.append(util.fetch_opinion(citation))
+        opinion = util.fetch_opinion(citation)
+        if opinion:
+            cited_opinions.append(opinion)
 
     scores = OrderedDict()
     for candidate_name in os.listdir(DATA_PATH):
