@@ -14,6 +14,7 @@ def load_opinion(directory, file_name):
     return pickle.Unpickler(open(full_file_path, 'rb')).load()
 
 def fetch_opinion(citation):
+    print 'called fetch'
     if not citation._reporter or not citation._volume or not citation._page:
         return None
     
@@ -28,9 +29,12 @@ def fetch_opinion(citation):
         print '404 Error: Citation Not Found'
         return None
     elif r.status_code == 301:
+        print 'before fetch request'
         r = requests.get(url_base)
+        print 'after fetch request'
         soup = bs.BeautifulSoup(r.content)
-        return soup.find("div", {"id": "opinion-content"})
+        opinion = soup.find("div", {"id": "opinion-content"})
+        return opinion
     elif r.status_code == 200:
         print 'Multiple results found. Skipping for speed...'
         return None

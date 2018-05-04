@@ -3,6 +3,7 @@ import sys
 import numpy
 import util
 import metrics
+import concurrent.futures
 
 from collections import OrderedDict
 
@@ -19,16 +20,18 @@ for target_name in os.listdir(DATA_PATH):
         continue
 
     cited_opinions = []
-    print len(target.identifier.citations)
-    for citation in target.identifier.citations:
-        print citation
-        opinion = util.fetch_opinion(citation)
-        if opinion:
-            cited_opinions.append(opinion)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=30) as executor:
+        future_to_opinion = [executor.submit(util.fetch_opinion, citation) for citation in target.identifier.citations]
+        for future in concurrent.futures.as_completed(future_to_opinion):
+            if future:
+                cited_opinions.append(future.result())
+    #for citation in target.identifier.citations:
+    #    opinion = util.fetch_opinion(citation)
+    #    if opinion:
+    #        cited_opinions.append(opinion)
 
     scores = OrderedDict()
     for candidate_name in os.listdir(DATA_PATH):
-        print candidate_name
         candidate_id = util.id_from_file_name(candidate_name)
         candidate = util.load_opinion(DATA_PATH, candidate_name)
         candidate_scores = []
