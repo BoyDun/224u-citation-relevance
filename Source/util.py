@@ -1,6 +1,8 @@
 import pickle
 import os
 import urllib2
+import requests
+import BeautifulSoup as bs
 
 from itertools import islice
 
@@ -19,12 +21,21 @@ def fetch_opinion(citation):
     url_base += citation._reporter + '/'
     url_base += citation._volume + '/'
     url_base += citation._page + '/'
-#    url_base = 'https://www.courtlistener.com/c/U.S./100/43/'
-    response = urllib2.urlopen(url_base)
-    print response.getcode()
-    html = response.read()
-    print html
-    raise NotImplementedError()
+    #url_base = 'https://www.courtlistener.com/c/U.S./100/43/'
+    #url_base = 'https://www.courtlistener.com/c/U.S./558/310/'
+    r = requests.get(url_base, allow_redirects=False)
+    if r.status_code == 404:
+        print '404 Error: Citation Not Found'
+        return None
+    elif r.status_code == 301:
+        r = requests.get(url_base)
+        soup = bs.BeautifulSoup(r.content)
+        return soup.find("div", {"id": "opinion-content"})
+    elif r.status_code == 200:
+        print 'Multiple results found. Skipping for speed...'
+        return None
+    else:
+        raise ValueError('UNCAUGHT STATUS CODE: ' + str(r.status_code))
 
 def take(n, iterable):
     return list(islice(iterable, n))

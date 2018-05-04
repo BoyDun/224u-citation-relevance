@@ -14,18 +14,21 @@ for target_name in os.listdir(DATA_PATH):
     print 'Computing metrics for case %s...' % (target_id)
 
     target = util.load_opinion(DATA_PATH, target_name)
-    if not target.identifier.citations:
+    if not target.identifier or not target.identifier.citations:
         print "No citations. Moving on..."
         continue
 
     cited_opinions = []
+    print len(target.identifier.citations)
     for citation in target.identifier.citations:
+        print citation
         opinion = util.fetch_opinion(citation)
         if opinion:
             cited_opinions.append(opinion)
 
     scores = OrderedDict()
     for candidate_name in os.listdir(DATA_PATH):
+        print candidate_name
         candidate_id = util.id_from_file_name(candidate_name)
         candidate = util.load_opinion(DATA_PATH, candidate_name)
         candidate_scores = []
