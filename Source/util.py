@@ -29,9 +29,7 @@ def fetch_opinion(citation):
         print '404 Error: Citation Not Found'
         return None
     elif r.status_code == 301:
-        print 'before fetch request'
         r = requests.get(url_base)
-        print 'after fetch request'
         soup = bs.BeautifulSoup(r.content)
         opinion = soup.find("div", {"id": "opinion-content"})
         return opinion

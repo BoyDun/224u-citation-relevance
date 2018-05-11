@@ -29,11 +29,15 @@ for target_name in os.listdir(DATA_PATH):
     #    opinion = util.fetch_opinion(citation)
     #    if opinion:
     #        cited_opinions.append(opinion)
+    #    sys.exit()
 
     scores = OrderedDict()
     for candidate_name in os.listdir(DATA_PATH):
         candidate_id = util.id_from_file_name(candidate_name)
         candidate = util.load_opinion(DATA_PATH, candidate_name)
+        if not metrics.valid(target, candidate):
+            scores[candidate_id] = -1
+            continue
         candidate_scores = []
         for cited_opinion in cited_opinions:
             candidate_scores.append(metrics.compute_aggregate_relevance(cited_opinion, candidate))
