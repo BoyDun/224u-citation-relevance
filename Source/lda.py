@@ -10,6 +10,7 @@ from collections import Counter
 from sklearn.feature_extraction import DictVectorizer
 
 import os
+import tfidf
 
 data_dir = '../Data/nd'
 
@@ -18,12 +19,17 @@ filepaths = [os.path.join(data_dir, filename) for filename in filenames]
 num_files = len(filenames)
 
 count_dicts = []
-
-'''
-for i, pkl in enumerate(filepaths):
+ops = []
+for i, pkl in enumerate(filepaths[:5]):
     with open('./' + pkl, "rb") as pickle_file:
         unpickler = pickle.Unpickler(pickle_file)
-        j = unpickler.load()
+        ops.append(unpickler.load())
+
+print(tfidf.tfidf_distance(ops[0], ops[1]))
+
+
+
+'''
         soup = BeautifulSoup(j.html, 'lxml')
         text = soup.get_text()
         # text = text.translate(None, string.punctuation)
@@ -36,6 +42,8 @@ for i, pkl in enumerate(filepaths):
     print "processed " + pkl + ": " + str(i) + "/" + str(num_files)
 '''
 
+
+'''
 with open('../Data/count_dicts_nd.py', 'rb') as wc_file:
     unpickler = pickle.Unpickler(wc_file)
     count_dicts = unpickler.load()
@@ -53,7 +61,7 @@ X = v.fit_transform(count_dicts)
 fnames = v.get_feature_names()
 with open('../Data/feature_names.pkl', 'wb') as fn_file:
     pickle.dump(fnames, fn_file)
-
+'''
 
 
 '''
@@ -67,4 +75,5 @@ with open('../Data/feature_names.pkl', 'rb') as feature_names_file:
 
 lda = LatentDirichletAllocation(n_components=5, learning_method = 'online')
 ft = lda.fit_transform(X)
+
 '''

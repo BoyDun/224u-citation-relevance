@@ -1,3 +1,4 @@
+import tfidf
 
 #TODO: ANY OTHER VALID JURISDICTIONS FOR ND?
 VALID_ND_SUPREME_COURT_JURSIDICTIONS = set(['nd', 'scotus'])
@@ -11,5 +12,7 @@ def valid(target, candidate):
     return candidate.datetime < target.datetime
 
 def compute_aggregate_relevance(target, candidate):
+    return tfidf.tfidf_distance(target, candidate)
+
     raise NotImplementedError()
     return 0

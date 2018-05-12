@@ -2,11 +2,13 @@ import pickle
 import os
 import urllib2
 import requests
-import BeautifulSoup as bs
+from bs4 import BeautifulSoup as bs
 import enchant 
 import sklearn
+import re
 
 from itertools import islice
+from collections import Counter
 
 def id_from_file_name(name):
     return name.split('.')[0]
@@ -42,7 +44,7 @@ def fetch_opinion(citation):
         raise ValueError('UNCAUGHT STATUS CODE: ' + str(r.status_code))
 
 def tokens_from_opinion(opinion):
-    soup = BeautifulSoup(citation.html, 'lxml')
+    soup = bs(opinion.html, 'lxml')
     text = soup.get_text()
     text = re.sub(r'[^\w\s]','', text)
     text = text.lower()
@@ -55,9 +57,9 @@ def is_english_word(word):
     return word_list.check(word)
 
 def word_counts_from_tokens(tokens):
-    words = [word for word in words if word.isalpha() and is_english_word(word)]
+    words = [word for word in tokens if word.isalpha() and is_english_word(word)]
     counts = Counter(words)
-    count_dicts.append(counts)
+    return counts
 
 with open('../Data/count_vectorizer.pkl', 'rb') as pf:
     count_vectorizer = pickle.Unpickler(pf).load()
@@ -68,7 +70,7 @@ def vectorize_count_dict(count_dict):
 def vectorize_opinion(opinion):
     tokens = tokens_from_opinion(opinion)
     word_counts = word_counts_from_tokens(tokens)
-    count_vector = vectorize_vount_dict(word_counts)
+    count_vector = vectorize_count_dict(word_counts)
     return count_vector
 
 def take(n, iterable):
