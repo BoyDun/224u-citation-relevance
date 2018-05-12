@@ -65,5 +65,11 @@ with open('../Data/count_vectorizer.pkl', 'rb') as pf:
 def vectorize_count_dict(count_dict):
     return count_vectorizer.transform(count_dict)
 
+def vectorize_opinion(opinion):
+    tokens = tokens_from_opinion(opinion)
+    word_counts = word_counts_from_tokens(tokens)
+    count_vector = vectorize_vount_dict(word_counts)
+    return count_vector
+
 def take(n, iterable):
     return list(islice(iterable, n))
