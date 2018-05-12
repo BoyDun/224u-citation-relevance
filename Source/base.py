@@ -15,8 +15,8 @@ for target_name in os.listdir(DATA_PATH):
     print 'Computing metrics for case %s...' % (target_id)
 
     target = util.load_opinion(DATA_PATH, target_name)
-    if not target.identifier or not target.identifier.citations:
-        print "No citations. Moving on..."
+    if not metrics.valid_target(target):
+        print "Not a valid target. Moving on..."
         continue
 
     cited_opinions = []
@@ -35,7 +35,7 @@ for target_name in os.listdir(DATA_PATH):
     for candidate_name in os.listdir(DATA_PATH):
         candidate_id = util.id_from_file_name(candidate_name)
         candidate = util.load_opinion(DATA_PATH, candidate_name)
-        if not metrics.valid(target, candidate):
+        if not metrics.valid_candidate(target, candidate):
             scores[candidate_id] = -1
             continue
         candidate_scores = []

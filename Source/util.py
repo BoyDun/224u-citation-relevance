@@ -26,15 +26,13 @@ def fetch_opinion(citation):
     url_base += citation._reporter + '/'
     url_base += citation._volume + '/'
     url_base += citation._page + '/'
-    #url_base = 'https://www.courtlistener.com/c/U.S./100/43/'
-    #url_base = 'https://www.courtlistener.com/c/U.S./558/310/'
     r = requests.get(url_base, allow_redirects=False)
     if r.status_code == 404:
         print '404 Error: Citation Not Found'
         return None
     elif r.status_code == 301:
         r = requests.get(url_base)
-        soup = bs.BeautifulSoup(r.content)
+        soup = bs(r.content, 'html5lib')
         opinion = soup.find("div", {"id": "opinion-content"})
         return opinion
     elif r.status_code == 200:
