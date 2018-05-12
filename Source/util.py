@@ -3,6 +3,8 @@ import os
 import urllib2
 import requests
 import BeautifulSoup as bs
+import enchant 
+import sklearn
 
 from itertools import islice
 
@@ -38,6 +40,30 @@ def fetch_opinion(citation):
         return None
     else:
         raise ValueError('UNCAUGHT STATUS CODE: ' + str(r.status_code))
+
+def tokens_from_opinion(opinion):
+    soup = BeautifulSoup(citation.html, 'lxml')
+    text = soup.get_text()
+    text = re.sub(r'[^\w\s]','', text)
+    text = text.lower()
+    words = text.split()
+    return words
+
+word_list = enchant.Dict("en_US")
+
+def is_english_word(word):
+    return word_list.check(word)
+
+def word_counts_from_tokens(tokens):
+    words = [word for word in words if word.isalpha() and is_english_word(word)]
+    counts = Counter(words)
+    count_dicts.append(counts)
+
+with open('../Data/count_vectorizer.pkl', 'rb') as pf:
+    count_vectorizer = pickle.Unpickler(pf).load()
+
+def vectorize_count_dict(count_dict):
+    return count_vectorizer.transform(count_dict)
 
 def take(n, iterable):
     return list(islice(iterable, n))
