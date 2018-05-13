@@ -1,3 +1,8 @@
+from nltk import ne_chunk, pos_tag, word_tokenize
+from nltk.tree import Tree
+from collections import defaultdict
+import numpy.linalg
+
 import tfidf
 
 #TODO: ANY OTHER VALID JURISDICTIONS FOR ND?
@@ -12,10 +17,40 @@ def valid_candidate(target, candidate):
     target_jur = target.identifier.jurisdiction
     candidate_jur = candidate.identifier.jurisdiction
     if candidate_jur not in VALID_JURISDICTIONS[target_jur]:
-        return False
+	return False
     return candidate.datetime < target.datetime
 
-def compute_aggregate_relevance(target, candidate):
-    
-    tfidf_score = 1 * tfidf.tfidf_distance(target, candidate)
-    return tfidf_score
+def get_entities(text):
+    chunked = ne_chunk(pos_tag(word_tokenize(text)))
+    prev = None
+    continuous_chunk = []
+    current_chunk = []
+    for i in chunked:
+    	if type(i) == Tree:
+            current_chunk.append(" ".join([token for token, pos in i.leaves()]))
+        elif current_chunk:
+            named_entity = " ".join(current_chunk)
+            if named_entity not in continuous_chunk:
+                continuous_chunk.append((named_entity, i.label()))
+                current_chunk = []
+            else:
+                continue
+    organization_entities = defaultdict(int)
+    for pair in continuous_chunk:
+        if pair[1] == 'organization': #TODO: WHAT IS ACTUAL ORGANIZATION LABEL?
+            organization_entities[pair[0]] += 1
+    return organization_entities
+
+def calc_entity_distance(cited_text, candidate):
+    cited_entities = get_entities(cited_text)
+    candidate_entities = get_entities(candidate.html)
+    overlap = 0.0
+    for entity in cited_entities:
+        if entity in candidate_entities:
+            overlap += cited_entities[entity] * candidate_entities[entity]
+    return overlap / (numpy.linalg.norm(cited_entities.values()) * numpy.linalg.norm(candidate_entities.values()))
+
+def compute_aggregate_relevance(cited_text, candidate):
+    entity_score = 1 * calc_entity_distance(cited_text, candidate)
+    tfidf_score = 1 * tfidf.tfidf_distance(cited_text, candidate)
+    return tfidf_score + entity_score

@@ -17,7 +17,7 @@ def load_opinion(directory, file_name):
     full_file_path = os.path.join(directory, file_name)
     return pickle.Unpickler(open(full_file_path, 'rb')).load()
 
-def fetch_opinion(citation):
+def fetch_opinion_soup(citation):
     print 'called fetch'
     if not citation._reporter or not citation._volume or not citation._page:
         return None
@@ -32,8 +32,10 @@ def fetch_opinion(citation):
         return None
     elif r.status_code == 301:
         r = requests.get(url_base)
+        print r.content
         soup = bs(r.content, 'html5lib')
         opinion = soup.find("div", {"id": "opinion-content"})
+        print opinion
         return opinion
     elif r.status_code == 200:
         print 'Multiple results found. Skipping for speed...'
@@ -42,7 +44,7 @@ def fetch_opinion(citation):
         raise ValueError('UNCAUGHT STATUS CODE: ' + str(r.status_code))
 
 def tokens_from_opinion(opinion):
-    soup = bs(opinion.html, 'lxml')
+    soup = bs(opinion, 'lxml')
     text = soup.get_text()
     text = re.sub(r'[^\w\s]','', text)
     text = text.lower()

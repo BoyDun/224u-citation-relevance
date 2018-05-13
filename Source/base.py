@@ -21,16 +21,19 @@ for target_name in os.listdir(DATA_PATH):
 
     cited_opinions = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=30) as executor:
-        future_to_opinion = [executor.submit(util.fetch_opinion, citation) for citation in target.identifier.citations]
+        future_to_opinion = [executor.submit(util.fetch_opinion_soup, citation) for citation in target.identifier.citations]
         for future in concurrent.futures.as_completed(future_to_opinion):
             if future:
-                cited_opinions.append(future.result())
+                result = future.result()
+                if result is not None:
+                    print 'hi'
+                    cited_opinions.append(result.text)
     #for citation in target.identifier.citations:
     #    opinion = util.fetch_opinion(citation)
     #    if opinion:
     #        cited_opinions.append(opinion)
     #    sys.exit()
-
+    print len(cited_opinions)
     scores = OrderedDict()
     for candidate_name in os.listdir(DATA_PATH):
         candidate_id = util.id_from_file_name(candidate_name)
