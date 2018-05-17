@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup as bs
 import enchant 
 import sklearn
 import re
+import string
 
 from itertools import islice
 from collections import Counter
@@ -32,10 +33,8 @@ def fetch_opinion_soup(citation):
         return None
     elif r.status_code == 301:
         r = requests.get(url_base)
-        print r.content
         soup = bs(r.content, 'html5lib')
         opinion = soup.find("div", {"id": "opinion-content"})
-        print opinion
         return opinion
     elif r.status_code == 200:
         print 'Multiple results found. Skipping for speed...'
@@ -75,3 +74,7 @@ def vectorize_opinion(opinion):
 
 def take(n, iterable):
     return list(islice(iterable, n))
+
+def filter_non_ascii(text):
+    printable = set(string.printable)
+    return filter(lambda x: x in printable, text)

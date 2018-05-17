@@ -26,13 +26,15 @@ for target_name in os.listdir(DATA_PATH):
             if future:
                 result = future.result()
                 if result is not None:
-                    print 'hi'
                     cited_opinions.append(result.text)
-    #for citation in target.identifier.citations:
-    #    opinion = util.fetch_opinion(citation)
-    #    if opinion:
-    #        cited_opinions.append(opinion)
-    #    sys.exit()
+#    for citation in target.identifier.citations:
+#        opinion = util.fetch_opinion_soup(citation)
+#        if opinion is not None:
+#            print opinion
+#            ascii_text = util.filter_non_ascii(opinion.text)
+#            cited_opinions.append(ascii_text)
+#            break
+#        sys.exit()
     print len(cited_opinions)
     scores = OrderedDict()
     for candidate_name in os.listdir(DATA_PATH):
