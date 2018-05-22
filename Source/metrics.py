@@ -27,7 +27,6 @@ def valid_candidate(target, candidate):
     if candidate_jur not in VALID_JURISDICTIONS[target_jur]:
         return False
     print(candidate.datetime, target.datetime)
-    # REMOVE WHEN BUG FIXED
     if not candidate.datetime:
         return False
     return candidate.datetime < target.datetime

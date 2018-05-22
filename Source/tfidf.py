@@ -15,5 +15,4 @@ def tfidf_distance(text, opinion):
   v2 = util.vectorize_opinion(opinion.html)
   t1 = transformer.transform(v1)
   t2 = transformer.transform(v2)
-  print(t1.shape, t2.shape)
   return (t1.dot(t2.T) / (norm(t1) * norm(t2)))[0, 0]
