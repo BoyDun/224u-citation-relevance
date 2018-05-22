@@ -20,20 +20,20 @@ for target_name in os.listdir(DATA_PATH):
         continue
 
     cited_opinions = []
-    with concurrent.futures.ThreadPoolExecutor(max_workers=30) as executor:
-        future_to_opinion = [executor.submit(util.fetch_opinion_soup, citation) for citation in target.identifier.citations]
-        for future in concurrent.futures.as_completed(future_to_opinion):
-            if future:
-                result = future.result()
-                if result is not None:
-                    cited_opinions.append(result.text)
-#    for citation in target.identifier.citations:
-#        opinion = util.fetch_opinion_soup(citation)
-#        if opinion is not None:
-#            print opinion
-#            ascii_text = util.filter_non_ascii(opinion.text)
-#            cited_opinions.append(ascii_text)
-#            break
+#    with concurrent.futures.ThreadPoolExecutor(max_workers=30) as executor:
+#        future_to_opinion = [executor.submit(util.fetch_opinion_soup, citation) for citation in target.identifier.citations]
+#        for future in concurrent.futures.as_completed(future_to_opinion):
+#            if future:
+#                result = future.result()
+#                if result is not None:
+#                    cited_opinions.append(result.text)
+    for citation in target.identifier.citations:
+        opinion = util.fetch_opinion_soup(citation)
+        if opinion is not None:
+            print opinion
+            ascii_text = util.filter_non_ascii(opinion.text)
+            cited_opinions.append(ascii_text)
+            break
 #        sys.exit()
     print len(cited_opinions)
     scores = OrderedDict()
