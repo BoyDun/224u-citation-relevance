@@ -18,7 +18,6 @@ for target_name in os.listdir(DATA_PATH):
     if not metrics.valid_target(target):
         print "Not a valid target. Moving on..."
         continue
-    target.html = util.filter_non_ascii(target.html)
     cited_opinions = []
 #    with concurrent.futures.ThreadPoolExecutor(max_workers=30) as executor:
 #        future_to_opinion = [executor.submit(util.fetch_opinion_soup, citation) for citation in target.identifier.citations]
@@ -43,6 +42,7 @@ for target_name in os.listdir(DATA_PATH):
         if not metrics.valid_candidate(target, candidate):
             scores[candidate_id] = -1
             continue
+        candidate.html = util.filter_non_ascii(candidate.html)
         candidate_scores = []
         for cited_opinion in cited_opinions:
             candidate_scores.append(metrics.compute_aggregate_relevance(cited_opinion, candidate))
