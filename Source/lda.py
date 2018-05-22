@@ -9,6 +9,8 @@ from sklearn.decomposition import LatentDirichletAllocation
 from collections import Counter
 from sklearn.feature_extraction import DictVectorizer
 
+import numpy as np
+
 import os
 import tfidf
 
@@ -18,15 +20,24 @@ filenames = os.listdir(data_dir)
 filepaths = [os.path.join(data_dir, filename) for filename in filenames]
 num_files = len(filenames)
 
+
+for pkl in [filepaths[0], '../Data/nd/1707959.pkl']:
+    with open(pkl, "rb") as pickle_file:
+        unpickler = pickle.Unpickler(pickle_file)
+        print(unpickler.load().html)
+
+
+
 count_dicts = []
 ops = []
-for i, pkl in enumerate(filepaths[:5]):
+
+for i, pkl in enumerate(filepaths[:1000]):
     with open('./' + pkl, "rb") as pickle_file:
         unpickler = pickle.Unpickler(pickle_file)
         ops.append(unpickler.load())
 
-print(tfidf.tfidf_distance(ops[0], ops[1]))
-
+prox = [tfidf.tfidf_distance(ops[0].html, i) for i in ops]
+print(filepaths[np.argmax(prox) + 1])
 
 
 '''

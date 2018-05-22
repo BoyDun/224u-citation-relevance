@@ -9,8 +9,8 @@ import numpy.linalg
 
 import tfidf
 
-ST = StanfordNERTagger('/home/bodun/stanford-ner-2018-02-27/classifiers/english.all.3class.distsim.crf.ser.gz',
-                       '/home/bodun/stanford-ner-2018-02-27/stanford-ner.jar',
+ST = StanfordNERTagger('/home/eric/stanford-ner-2018-02-27/classifiers/english.all.3class.distsim.crf.ser.gz',
+                       '/home/eric/stanford-ner-2018-02-27/stanford-ner.jar',
                        encoding='utf-8')
 
 #TODO: ANY OTHER VALID JURISDICTIONS FOR ND?
@@ -25,7 +25,10 @@ def valid_candidate(target, candidate):
     target_jur = target.identifier.jurisdiction
     candidate_jur = candidate.identifier.jurisdiction
     if candidate_jur not in VALID_JURISDICTIONS[target_jur]:
-	return False
+        return False
+    print(candidate.datetime, target.datetime)
+    if not candidate.datetime:
+        return False
     return candidate.datetime < target.datetime
 
 def get_entities(text):

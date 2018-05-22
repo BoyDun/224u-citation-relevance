@@ -43,7 +43,7 @@ def fetch_opinion_soup(citation):
         raise ValueError('UNCAUGHT STATUS CODE: ' + str(r.status_code))
 
 def tokens_from_opinion(opinion):
-    soup = bs(opinion, 'lxml')
+    soup = bs(opinion, 'html5lib')
     text = soup.get_text()
     text = re.sub(r'[^\w\s]','', text)
     text = text.lower()
