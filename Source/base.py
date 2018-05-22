@@ -18,7 +18,7 @@ for target_name in os.listdir(DATA_PATH):
     if not metrics.valid_target(target):
         print "Not a valid target. Moving on..."
         continue
-
+    target.html = util.filter_non_ascii(target.html)
     cited_opinions = []
 #    with concurrent.futures.ThreadPoolExecutor(max_workers=30) as executor:
 #        future_to_opinion = [executor.submit(util.fetch_opinion_soup, citation) for citation in target.identifier.citations]
