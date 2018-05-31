@@ -26,7 +26,6 @@ def valid_candidate(target, candidate):
     candidate_jur = candidate.identifier.jurisdiction
     if candidate_jur not in VALID_JURISDICTIONS[target_jur]:
         return False
-    print(candidate.datetime, target.datetime)
     if not candidate.datetime:
         return False
     return candidate.datetime < target.datetime
@@ -62,9 +61,9 @@ def get_entities(text):
             organization_entities[word] += 1
     return organization_entities
 
-def calc_entity_distance(cited_text, candidate):
-    cited_entities = get_entities(cited_text)
-    candidate_entities = get_entities(candidate.html)
+def calc_entity_distance(text1, text2):
+    cited_entities = get_entities(text1)
+    candidate_entities = get_entities(text2)
     overlap = 0.0
     for entity in cited_entities:
         if entity in candidate_entities:
@@ -72,7 +71,9 @@ def calc_entity_distance(cited_text, candidate):
     distance = overlap / (numpy.linalg.norm(cited_entities.values()) * numpy.linalg.norm(candidate_entities.values()))
     return distance
 
-def compute_aggregate_relevance(cited_text, candidate):
-    entity_score = 1 * calc_entity_distance(cited_text, candidate)
-    tfidf_score = 1 * tfidf.tfidf_distance(cited_text, candidate)
-    return tfidf_score + entity_score
+def compute_aggregate_relevance(text1, text2):
+    entity_score = 0#1 * calc_entity_distance(text1, text2)
+    tfidf_score = 1 * tfidf.tfidf_distance(text1, text2)
+    aggregate_score = entity_score + tfidf_score
+    print aggregate_score
+    return aggregate_score

@@ -10,9 +10,9 @@ if not os.path.exists('../Data/tfidf.pkl'):
 with open('../Data/tfidf.pkl', 'rb') as pf:
   transformer = pickle.Unpickler(pf).load()
 
-def tfidf_distance(text, opinion):
-  v1 = util.vectorize_opinion(text)
-  v2 = util.vectorize_opinion(opinion.html)
+def tfidf_distance(text1, text2):
+  v1 = util.vectorize_opinion(text1)
+  v2 = util.vectorize_opinion(text2)
   t1 = transformer.transform(v1)
   t2 = transformer.transform(v2)
   return (t1.dot(t2.T) / (norm(t1) * norm(t2)))[0, 0]
