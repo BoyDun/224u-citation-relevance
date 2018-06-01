@@ -6,12 +6,18 @@ from collections import defaultdict
 from nltk.tag import StanfordNERTagger
 from nltk.tokenize import word_tokenize
 import numpy.linalg
-
+import os
 import tfidf
 
-ST = StanfordNERTagger('/home/bodun/stanford-ner-2018-02-27/classifiers/english.all.3class.distsim.crf.ser.gz',
-                       '/home/bodun/stanford-ner-2018-02-27/stanford-ner.jar',
-                       encoding='utf-8')
+homepath = os.path.expanduser("~")
+path1 = os.path.join(homepath, 'stanford-ner-2018-02-27', 'classifiers',
+                     'english.all.3class.distsim.crf.ser.gz')
+path2 = os.path.join(homepath, 'stanford-ner-2018-02-27', 'stanford-ner.jar')
+
+#ST = StanfordNERTagger('/home/bodun/stanford-ner-2018-02-27/classifiers/english.all.3class.distsim.crf.ser.gz',
+#                       '/home/bodun/stanford-ner-2018-02-27/stanford-ner.jar',
+#                       encoding='utf-8')
+ST = StanfordNERTagger(path1, path2, encoding='utf-8')
 
 #TODO: ANY OTHER VALID JURISDICTIONS FOR ND?
 VALID_ND_SUPREME_COURT_JURSIDICTIONS = set(['nd', 'scotus'])
